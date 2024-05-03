@@ -27,6 +27,14 @@
 #include "LoopClosing.h"
 #include "Frame.h"
 
+#include <string>
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <vector>
+#include <opencv2/features2d/features2d.hpp>
+#include "Frame.h"
+
 #include "Thirdparty/g2o/g2o/types/types_seven_dof_expmap.h"
 
 namespace ORB_SLAM2

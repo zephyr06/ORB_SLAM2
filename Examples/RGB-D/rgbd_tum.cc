@@ -32,7 +32,9 @@ using namespace std;
 
 void LoadImages(const string &strAssociationFilename, vector<string> &vstrImageFilenamesRGB,
                 vector<string> &vstrImageFilenamesD, vector<double> &vTimestamps);
-
+ 
+std::string dataset_name_association_file = "freiburg1_desk";
+std::string dataset_name_rgbd = "rgbd_dataset_freiburg1_desk"; 
 int main(int argc, char **argv)
 {
     if(argc != 5)
@@ -45,7 +47,8 @@ int main(int argc, char **argv)
     vector<string> vstrImageFilenamesRGB;
     vector<string> vstrImageFilenamesD;
     vector<double> vTimestamps;
-    string strAssociationFilename = string(argv[4]);
+    // string strAssociationFilename = string(argv[4]);
+    string strAssociationFilename = "/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/YOLO-DynaSLAM/Examples/RGB-D/associations/"+dataset_name_association_file+".txt";
     LoadImages(strAssociationFilename, vstrImageFilenamesRGB, vstrImageFilenamesD, vTimestamps);
 
     // Check consistency in the number of images and depthmaps
@@ -62,7 +65,9 @@ int main(int argc, char **argv)
     }
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::RGBD,true);
+    string strVocFile = "/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/YOLO-DynaSLAM/Vocabulary/ORBvoc.txt";
+    string strSettingsFile = "/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/YOLO-DynaSLAM/Examples/RGB-D/TUM3.yaml";
+    ORB_SLAM2::System SLAM(strVocFile,strSettingsFile,ORB_SLAM2::System::RGBD,true);
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
@@ -77,14 +82,22 @@ int main(int argc, char **argv)
     for(int ni=0; ni<nImages; ni++)
     {
         // Read image and depthmap from file
-        imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
-        imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],CV_LOAD_IMAGE_UNCHANGED);
+        imRGB = cv::imread(string("/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/dataset/"+dataset_name_rgbd+"/")+"/"+vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
+        imD = cv::imread(string("/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/dataset/"+dataset_name_rgbd+"/")+"/"+vstrImageFilenamesD[ni],CV_LOAD_IMAGE_UNCHANGED);
+        // imRGB = cv::imread(string(argv[3])+"/"+vstrImageFilenamesRGB[ni],CV_LOAD_IMAGE_UNCHANGED);
+        // imD = cv::imread(string(argv[3])+"/"+vstrImageFilenamesD[ni],CV_LOAD_IMAGE_UNCHANGED);
         double tframe = vTimestamps[ni];
 
+        // if(imRGB.empty())
+        // {
+        //     cerr << endl << "Failed to load image at: "
+        //          << string(argv[3]) << "/" << vstrImageFilenamesRGB[ni] << endl;
+        //     return 1;
+        // }
         if(imRGB.empty())
         {
             cerr << endl << "Failed to load image at: "
-                 << string(argv[3]) << "/" << vstrImageFilenamesRGB[ni] << endl;
+                 << string("/home/nvidia/workspace/sdcard/SP_Scheduler_Stack/dataset/"+dataset_name_rgbd+"/") << "/" << vstrImageFilenamesRGB[ni] << endl;
             return 1;
         }
 

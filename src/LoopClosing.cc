@@ -27,6 +27,7 @@
 #include "Optimizer.h"
 
 #include "ORBmatcher.h"
+#include <unistd.h>
 
 #include<mutex>
 #include<thread>
@@ -71,6 +72,7 @@ void LoopClosing::Run()
                if(ComputeSim3())
                {
                    // Perform loop fusion and pose graph optimization
+                   std::cout<<"Perform loop closing!\n";
                    CorrectLoop();
                }
             }

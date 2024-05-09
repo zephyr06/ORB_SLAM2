@@ -36,6 +36,7 @@
 #include<iostream>
 
 #include<mutex>
+#include "profilier.h"
 
 
 using namespace std;
@@ -206,6 +207,9 @@ cv::Mat Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat &imRe
 
 cv::Mat Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const double &timestamp)
 {
+    
+    // if(USE_PROFILER)
+        // BeginTimer("GrabImageRGBD");
     mImGray = imRGB;
     cv::Mat imDepth = imD;
 
@@ -231,6 +235,8 @@ cv::Mat Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const d
 
     Track();
 
+    // if(USE_PROFILER)
+        // EndTimer("GrabImageRGBD");
     return mCurrentFrame.mTcw.clone();
 }
 
@@ -266,6 +272,8 @@ cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp)
 
 void Tracking::Track()
 {
+    // if(USE_PROFILER)
+        // BeginTimer("Track()");
     if(mState==NO_IMAGES_YET)
     {
         mState = NOT_INITIALIZED;
@@ -285,8 +293,12 @@ void Tracking::Track()
 
         mpFrameDrawer->Update(this);
 
-        if(mState!=OK)
+        if(mState!=OK){
+            // if(USE_PROFILER)
+                // EndTimer("Track()");
             return;
+        }
+            
     }
     else
     {
@@ -475,6 +487,9 @@ void Tracking::Track()
             {
                 cout << "Track lost soon after initialisation, reseting..." << endl;
                 mpSystem->Reset();
+
+                // if(USE_PROFILER)
+                    // EndTimer("Track()");
                 return;
             }
         }
@@ -502,6 +517,9 @@ void Tracking::Track()
         mlFrameTimes.push_back(mlFrameTimes.back());
         mlbLost.push_back(mState==LOST);
     }
+
+    // if(USE_PROFILER)
+        // EndTimer("Track()");
 
 }
 

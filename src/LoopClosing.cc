@@ -89,6 +89,38 @@ void LoopClosing::Run()
     SetFinish();
 }
 
+
+
+void LoopClosing::RunOnce()
+{
+    mbFinished =false;
+
+        // Check if there are keyframes in the queue
+        if(CheckNewKeyFrames())
+        {
+            // Detect loop candidates and check covisibility consistency
+            if(DetectLoop())
+            {
+               // Compute similarity transformation [sR|t]
+               // In the stereo/RGBD case s=1
+               if(ComputeSim3())
+               {
+                   // Perform loop fusion and pose graph optimization
+                   std::cout<<"Perform loop closing!\n";
+                   CorrectLoop();
+               }
+            }
+        }       
+
+        ResetIfRequested();
+
+        if(CheckFinish())
+            return;
+
+        // usleep(5000);
+}
+
+
 void LoopClosing::InsertKeyFrame(KeyFrame *pKF)
 {
     unique_lock<mutex> lock(mMutexLoopQueue);

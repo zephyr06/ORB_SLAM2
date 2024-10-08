@@ -59,6 +59,7 @@ public:
 
     // Main function
     void Run();
+    void RunOnce();
 
     void InsertKeyFrame(KeyFrame *pKF);
 

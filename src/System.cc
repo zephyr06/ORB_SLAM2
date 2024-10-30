@@ -97,10 +97,10 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     //Initialize the Viewer thread and launch
     if(bUseViewer)
     {
-        mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,strSettingsFile);
-        // mptViewer = new thread(&Viewer::Run, mpViewer);
-        mpViewer->RunOnce();
-        mpTracker->SetViewer(mpViewer);
+        // mpViewer = new Viewer(this, mpFrameDrawer,mpMapDrawer,mpTracker,strSettingsFile);
+        // // mptViewer = new thread(&Viewer::Run, mpViewer);
+        // mpViewer->RunOnce();
+        // mpTracker->SetViewer(mpViewer);
     }
 
     //Set pointers between threads
@@ -315,6 +315,8 @@ void System::Shutdown()
 {
     mpLocalMapper->RequestFinish();
     mpLoopCloser->RequestFinish();
+    mpLocalMapper->Run(); // to run the finish code
+    mpLoopCloser->Run(); // to run the finish code
     if(mpViewer)
     {
         mpViewer->RequestFinish();
